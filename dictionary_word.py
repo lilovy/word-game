@@ -3,13 +3,13 @@ import re
 
 
 def read_dict():
-    with open('words.txt') as f:
+    with open('nouns.txt') as f:
         dicts = [i.lower().rstrip() for i in f.readlines()]
     return dicts
 
 
 def update_dict(word):
-    with open('words.txt', 'a') as f:
+    with open('nouns.txt', 'a') as f:
         f.write(f'\n{word}')
 
 
@@ -73,27 +73,6 @@ def isMatch(word_new,
     else:
         return False
 
-
-def main():
-    buffer = []
-    word = return_word()
-    while True:
-        print(word)
-        x = input(f"input the word on '{last_letter(word)}', for exit input 'exit': ")
-        if x == 'exit':
-
-            break
-
-        if isMatch(x, word) and x not in buffer:
-            if word is not None:
-                buffer.append(x)
-                word = return_word(x)
-            elif word is None:
-                ...
-        elif x in buffer:
-            print('this word was used later')
-        else:
-            print(f"incorrect word, type the word on '{last_letter(word)}'")
 
 
 
