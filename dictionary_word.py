@@ -21,9 +21,7 @@ def check_word(word) -> bool:
 
 
 def get_words(word):
-    letter = word[-1]
-    if word[-1] == 'ь':
-        letter = word[-2]
+    letter = last_letter(word)
     regex = fr'{letter}.*'
 
     dict_curr_words = [i for i in read_dict() if re.match(regex, i)]
@@ -46,8 +44,10 @@ def return_word(word=None):
             if ask in ('y', 'д', 'yes', 'да'):
                 update_dict(word)
                 return return_word(word)
-            if ask in ('n', 'no', 'н', 'нет'):
+            # if ask in ('n', 'no', 'н', 'нет'):
+            else:
                 return None
+
 
 
 def check_typed_word(word):
@@ -55,8 +55,9 @@ def check_typed_word(word):
 
 
 def last_letter(word):
+    # if isMatch()
     w = word[-1]
-    if w == 'ь':
+    if w in ('ь', 'ы'):
         w = word[-2]
     return w
 
