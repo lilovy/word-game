@@ -18,6 +18,8 @@ def main():
             if word is not None:
                 buffer.append(x)
                 word = return_word(x)
+            if word == 'exit':
+                break
             if word is None:
                 word = word_backup
                 buffer.remove(x)

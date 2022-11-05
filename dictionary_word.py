@@ -42,12 +42,25 @@ def return_word(word=None):
         else:
             ask = input('add new word? y/n(д/н):')
             if ask in ('y', 'д', 'yes', 'да'):
-                update_dict(word)
-                return return_word(word)
-            # if ask in ('n', 'no', 'н', 'нет'):
+                return check_add_word(word)
             else:
                 return None
 
+
+def check_add_word(word):
+    if word[-1] != 'ы':
+        update_dict(word)
+        return return_word(word)
+    else:
+        print('Enter the word in the singular form.')
+        n_word = input('input word (exit - to end): ')
+        if n_word == 'exit':
+            return 'exit'
+        elif isMatch(n_word, word) and last_letter(n_word) != 'ы':
+            print(n_word, word)
+
+            return check_add_word(n_word)
+        # return return_word(n_word)
 
 
 def check_typed_word(word):
