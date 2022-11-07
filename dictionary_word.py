@@ -48,19 +48,8 @@ def return_word(word=None):
 
 
 def check_add_word(word):
-    if word[-1] != 'ы':
-        update_dict(word)
-        return return_word(word)
-    else:
-        print('Enter the word in the singular form.')
-        n_word = input('input word (exit - to end): ')
-        if n_word == 'exit':
-            return 'exit'
-        elif isMatch(n_word, word) and last_letter(n_word) != 'ы':
-            print(n_word, word)
-
-            return check_add_word(n_word)
-        # return return_word(n_word)
+    update_dict(word)
+    return return_word(word)
 
 
 def check_typed_word(word):
