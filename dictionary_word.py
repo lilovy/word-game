@@ -40,11 +40,13 @@ def return_word(word=None):
             except:
                 pass
         else:
-            ask = input('add new word? y/n(д/н):')
-            if ask in ('y', 'д', 'yes', 'да'):
-                return check_add_word(word)
-            else:
-                return None
+            return None
+        # else:
+        #     ask = input('add new word? y/n(д/н):')
+        #     if ask in ('y', 'д', 'yes', 'да'):
+        #         return check_add_word(word)
+        #     else:
+        #         return None
 
 
 def check_add_word(word):
@@ -59,7 +61,7 @@ def check_typed_word(word):
 def last_letter(word):
     # if isMatch()
     w = word[-1]
-    if w in ('ь', 'ы'):
+    if w in ('ь', 'ы', '.'):
         w = word[-2]
     return w
 
