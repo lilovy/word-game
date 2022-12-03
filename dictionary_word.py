@@ -3,13 +3,13 @@ import re
 
 
 def read_dict():
-    with open('nouns.txt') as f:
+    with open('singular.txt', encoding='utf-8') as f:
         dicts = [i.lower().rstrip() for i in f.readlines()]
     return dicts
 
 
 def update_dict(word):
-    with open('nouns.txt', 'a') as f:
+    with open('singular.txt', 'a') as f:
         f.write(f'\n{word}')
 
 
