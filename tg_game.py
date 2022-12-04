@@ -8,3 +8,5 @@ def game(word=None):
     # else:
 
 
+def last_ltr(word):
+    return last_letter(word)

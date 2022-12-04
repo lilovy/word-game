@@ -9,7 +9,7 @@ def read_dict():
 
 
 def update_dict(word):
-    with open('singular.txt', 'a') as f:
+    with open('singular.txt', 'a', encoding='utf-8') as f:
         f.write(f'\n{word}')
 
 
