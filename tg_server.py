@@ -47,6 +47,10 @@ async def newgame(message: types.Message):
 async def returnbuff(message: types.Message):
     await message.reply(db.select_user_buff(message.chat.id))
 
+    #-----------------------------#
+    #        admin commands       #
+    #-----------------------------#
+
 
 @dp.message_handler(commands=['allbuffer'])
 async def buffall(message: types.Message):
@@ -83,6 +87,8 @@ async def printfault(message: types.Message):
     else:
         await message.reply('internal command')
 
+    #-----------------------------------------
+
 
 @dp.message_handler(commands=['addword'])
 async def addword():
@@ -110,8 +116,8 @@ async def echo(message: types.Message):
         db.insert_user_buff(message.chat.id, slowo)
 
     word_bot = db.select_bot_buff(message.chat.id)[-1][0].strip()      # return last word in bot buffer
-    # if word_bot
-    last_l = last_ltr(word_bot)                     # return last letter in word_bot or penultimate if last letter in ('ь', '.', 'ы')
+    last_l = last_ltr(word_bot)                     # return last letter in word_bot or penultimate
+                                                    # if last letter in ('ь', '.', 'ы')
 
     if slowo[0] == last_l:                          # check first letter in client word and last letter in bot word
         w_bot = game(slowo)
@@ -121,7 +127,7 @@ async def echo(message: types.Message):
         else:
             await message.answer('incorrect word')
             db.del_word(message.chat.id, slowo)
-            db.select_user_fault(message.chat.id)
+            db.insert_user_fault(message.chat.id, slowo)
             await message.answer(db.select_bot_buff(message.chat.id)[-1][0].strip())
     else:
         db.del_word(message.chat.id, slowo)
