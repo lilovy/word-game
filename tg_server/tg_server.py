@@ -4,10 +4,7 @@ from aiogram import Bot, Dispatcher, executor, types
 # from aioredis import Redis
 from dotenv import load_dotenv, find_dotenv
 from tg_game import game, last_ltr
-from temp_storage import fill_dict, buffer_user, buffer_bot, user_bases
-from db_connection import db
-from datetime import datetime
-
+from db_control.db_connection import db
 
 # from dictionary_word import return_word
 
@@ -19,6 +16,7 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=os.getenv('TOKEN'))
 dp = Dispatcher(bot)
 adminId = 347265373
+
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
@@ -47,15 +45,16 @@ async def newgame(message: types.Message):
 async def returnbuff(message: types.Message):
     await message.reply(db.select_user_buff(message.chat.id))
 
-    #-----------------------------#
-    #        admin commands       #
-    #-----------------------------#
+    # ----------------------------- #
+    #        admin commands         #
+    # ----------------------------- #
 
 
 @dp.message_handler(commands=['allbuffer'])
 async def buffall(message: types.Message):
     if message.chat.id == adminId:
-        db_buffer = [(frame[0], frame[1].strip(), frame[2], frame[3].isoformat(' ')) for frame in db.select_all_userbuff()]
+        db_buffer = [(frame[0], frame[1].strip(), frame[2], frame[3].isoformat(' ')) for frame in
+                     db.select_all_userbuff()]
         await message.reply(db_buffer)
     else:
         await message.reply('internal command')
@@ -87,7 +86,7 @@ async def printfault(message: types.Message):
     else:
         await message.reply('internal command')
 
-    #-----------------------------------------
+    # -----------------------------------------
 
 
 @dp.message_handler(commands=['addword'])
@@ -108,18 +107,18 @@ async def echo(message: types.Message):
     slowo = message.text.lower()
 
     try:
-        if slowo in db.select_user_buff()[-1][0]:   # check client word in buffer for not repeat
+        if slowo in db.select_user_buff()[-1][0]:  # check client word in buffer for not repeat
             await message.answer('word used later, input new word')
         else:
             db.insert_user_buff(message.chat.id, slowo)
     except Exception as ex:
         db.insert_user_buff(message.chat.id, slowo)
 
-    word_bot = db.select_bot_buff(message.chat.id)[-1][0].strip()      # return last word in bot buffer
-    last_l = last_ltr(word_bot)                     # return last letter in word_bot or penultimate
-                                                    # if last letter in ('ь', '.', 'ы')
+    word_bot = db.select_bot_buff(message.chat.id)[-1][0].strip()  # return last word in bot buffer
+    last_l = last_ltr(word_bot)  # return last letter in word_bot or penultimate
+                                 # if last letter in ('ь', '.', 'ы')
 
-    if slowo[0] == last_l:                          # check first letter in client word and last letter in bot word
+    if slowo[0] == last_l:  # check first letter in client word and last letter in bot word
         w_bot = game(slowo)
         if w_bot:
             db.insert_bot_buff(message.chat.id, w_bot)
@@ -135,5 +134,9 @@ async def echo(message: types.Message):
         await message.answer('incorrect word')
         await message.answer(db.select_bot_buff(message.chat.id)[-1][0].strip())
 
+
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
+
+# def main():
+#     executor.start_polling(db, skip_updates=True)

@@ -1,8 +1,7 @@
-import psycopg2
 # from config import port, host, db_name, password, user
 from datetime import datetime
-import config as cf
 import psycopg2 as pg2
+import db_control.config as cf
 
 # from sqlalchemy import create_engine
 # from sqlalchemy.orm import sessionmaker

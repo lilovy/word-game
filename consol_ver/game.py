@@ -1,4 +1,4 @@
-from dictionary_word import last_letter, return_word, isMatch
+from word_engine.dictionary_word import last_letter, return_word, isMatch
 
 
 def main():

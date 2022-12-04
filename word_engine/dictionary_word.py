@@ -1,15 +1,18 @@
-from random import randint
+import os
 import re
+from random import randint
+
+dir_f = os.path.dirname(os.getcwd()) + '\\word_engine'
 
 
 def read_dict():
-    with open('singular.txt', encoding='utf-8') as f:
+    with open(f'{dir_f}\\singular.txt', encoding='utf-8') as f:
         dicts = [i.lower().rstrip() for i in f.readlines()]
     return dicts
 
 
 def update_dict(word):
-    with open('singular.txt', 'a', encoding='utf-8') as f:
+    with open(f'{dir_f}\\singular.txt', 'a', encoding='utf-8') as f:
         f.write(f'\n{word}')
 
 
@@ -31,12 +34,12 @@ def get_words(word):
 def return_word(word=None):
     if word is None:
         dirs = read_dict()
-        return dirs[randint(0, len(dirs)-1)]
+        return dirs[randint(0, len(dirs) - 1)]
     else:
         if check_word(word):
             try:
                 dir_words = get_words(word)
-                return dir_words[randint(0, len(dir_words)-1)]
+                return dir_words[randint(0, len(dir_words) - 1)]
             except:
                 pass
         else:
@@ -77,8 +80,3 @@ def isMatch(word_new,
         return True
     else:
         return False
-
-
-
-
-

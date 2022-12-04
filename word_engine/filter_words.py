@@ -1,5 +1,5 @@
 import re
-from dictionary_word import read_dict
+from word_engine.dictionary_word import read_dict
 
 
 def add_word(word, folder='f_words.txt'):
