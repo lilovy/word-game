@@ -1,7 +1,13 @@
 import logging
 import os
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot, types
 from aiogram.dispatcher.filters import Text
+
+from aiogram.contrib.middlewares.logging import LoggingMiddleware
+from aiogram.dispatcher import Dispatcher
+from aiogram.dispatcher.webhook import SendMessage
+from aiogram.utils.executor import start_webhook
+
 from dotenv import load_dotenv, find_dotenv
 from core.tg_game import game, last_ltr
 from core.keyboards.reply import reply_keyboard, admin_keyboard, start_keyboard
@@ -9,7 +15,7 @@ from db_control.db_manipulation import (create_record,
                                         check_word,
                                         check_user,
                                         get_items,
-                                        check_game,
+                                         check_game,
                                         check_buffer,
                                         get_user,
                                         del_record,
@@ -28,9 +34,20 @@ load_dotenv(find_dotenv())
 logging.basicConfig(level=logging.INFO)
 
 
+# webhook settings
+WEBHOOK_HOST = os.getenv('HOST')
+WEBHOOK_PATH = os.getenv('API')
+WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+
+# webserver settings
+WEBAPP_HOST = os.getenv('APP')  # or ip
+WEBAPP_PORT = 3001
+
+
 bot = Bot(token=os.getenv('TOKEN'))
 dp = Dispatcher(bot)
 adminId = int(os.getenv('ANDMINID'))
+dp.middleware.setup(LoggingMiddleware())
 
 
 @dp.message_handler(commands=['start'])
@@ -40,7 +57,7 @@ async def send_welcome(message: types.Message):
     """
     check_user(message.chat.id, message.chat.username)
 
-    await message.reply("Простая игра в слова с ботом\n"
+    return SendMessage("Простая игра в слова с ботом\n"
                         "by @anggel_s\n"
                         ""
                         "to launch a game: /newgame", reply_markup=start_keyboard)
@@ -48,7 +65,7 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(commands='help')
 async def help_command(message: types.Message):
-    await message.reply("Классическая игра в слова:\n"
+    return SendMessage("Классическая игра в слова:\n"
                         "напиши слово начинающееся на\n"
                         "последнюю букву слова оппонета")
 
@@ -56,19 +73,19 @@ async def help_command(message: types.Message):
 @dp.message_handler(Text(equals='admin command'))
 async def admin_command(message: types.Message):
     if message.chat.id == adminId:
-        await message.reply("admin commands:", reply_markup=admin_keyboard)
+        return SendMessage("admin commands:", reply_markup=admin_keyboard)
     else:
-        await message.answer("access restricted")
+        return SendMessage("access restricted")
 
 
 @dp.message_handler(Text(equals=['go back']))
 async def go_back_command(message: types.Message):
-    await message.reply("user commands", reply_markup=reply_keyboard)
+    return SendMessage("user commands", reply_markup=reply_keyboard)
 
 
 @dp.message_handler(Text(equals='recall a word'))
 async def go_back_command(message: types.Message):
-    await message.answer(get_word(BotBuffer,
+    return SendMessage(get_word(BotBuffer,
                                   userId=message.chat.id) +
                          f""" - {last_ltr(get_word(BotBuffer,
                                                    userId=message.chat.id,
@@ -96,7 +113,7 @@ async def newgame(message: types.Message):
                   word=bot_word,
                   game=gm + 1)
 
-    await message.reply(bot_word +
+    return SendMessage(bot_word +
                         f""" - {last_ltr(get_word(BotBuffer, 
                                                   userId=message.chat.id, 
                                                   game=check_game(message.chat.id)))}""",
@@ -105,7 +122,7 @@ async def newgame(message: types.Message):
 
 @dp.message_handler(commands=['buffer'])
 async def returnbuff(message: types.Message):
-    await message.reply(check_buffer(UsersBuffer,
+    return SendMessage(check_buffer(UsersBuffer,
                                      userId=message.chat.id,
                                      game=check_game(message.chat.id)))
 
@@ -118,20 +135,20 @@ async def returnbuff(message: types.Message):
 async def buffall(message: types.Message):
 
     if message.chat.id == adminId:
-        await message.reply(check_buffer(UsersBuffer))
+        return SendMessage(check_buffer(UsersBuffer))
 
     else:
-        await message.reply('access restricted')
+        return SendMessage('access restricted')
 
 
 @dp.message_handler(commands=['users'])
 async def printusers(message: types.Message):
 
     if message.chat.id == adminId:
-        await message.reply(get_user())
+        return SendMessage(get_user())
 
     else:
-        await message.reply('access restricted')
+        return SendMessage('access restricted')
 
 
 # @dp.message_handler(commands=['allgames'])
@@ -147,10 +164,10 @@ async def printusers(message: types.Message):
 async def printfault(message: types.Message):
 
     if message.chat.id == adminId:
-        await message.reply(check_buffer(UsersFault))
+        return SendMessage(check_buffer(UsersFault))
 
     else:
-        await message.reply('access restricted')
+        return SendMessage('access restricted')
 
     # -----------------------------------------
 
@@ -177,9 +194,9 @@ async def echo(message: types.Message):
                       word=slowo,
                       game=check_game(message.chat.id)):
 
-            await message.answer('word used later, input new word')
-            await message.answer(get_word(BotBuffer,
-                                          userId=message.chat.id) +
+            return SendMessage('word used later, input new word\n',
+                               get_word(BotBuffer,
+                                        userId=message.chat.id) +
                                  f""" - {last_ltr(get_word(BotBuffer, 
                                                            userId=message.chat.id, 
                                                            game=check_game(message.chat.id)))}""")
@@ -204,14 +221,12 @@ async def echo(message: types.Message):
                                   userId=message.chat.id,
                                   word=w_bot,
                                   game=check_game(message.chat.id))
-                    await message.answer(w_bot +
+                    return SendMessage(w_bot +
                                          f""" - {last_ltr(get_word(BotBuffer, 
                                                                    userId=message.chat.id, 
                                                                    game=check_game(message.chat.id)))}""")
 
                 else:
-                    await message.answer('incorrect word, check the word you typed')
-
                     del_record(UsersBuffer,
                                userId=message.chat.id,
                                word=slowo,
@@ -222,8 +237,9 @@ async def echo(message: types.Message):
                                   word=slowo,
                                   game=check_game(message.chat.id))
 
-                    await message.answer(get_word(BotBuffer,
-                                                  userId=message.chat.id) +
+                    return SendMessage('incorrect word, check the word you typed\n',
+                                       get_word(BotBuffer,
+                                                userId=message.chat.id) +
                                          f""" - {last_ltr(get_word(BotBuffer,
                                                                    userId=message.chat.id,
                                                                    game=check_game(message.chat.id)))}""")
@@ -239,12 +255,12 @@ async def echo(message: types.Message):
                               word=slowo,
                               game=check_game(message.chat.id))
 
-                await message.answer(f"""incorrect word, input a word beginning with - 
+                return SendMessage(f"""incorrect word, input a word beginning with - 
                                            '{last_ltr(get_word(BotBuffer,
                                                                userId=message.chat.id,
-                                                               game=check_game(message.chat.id)))}'""")
-                await message.answer(get_word(BotBuffer,
-                                              userId=message.chat.id) +
+                                                               game=check_game(message.chat.id)))}\n'""",
+                                   get_word(BotBuffer,
+                                            userId=message.chat.id) +
                                      f""" - {last_ltr(get_word(BotBuffer,
                                                                userId=message.chat.id,
                                                                game=check_game(message.chat.id)))}""")
@@ -256,8 +272,37 @@ async def echo(message: types.Message):
                       game=check_game(message.chat.id))
 
 
+async def on_startup():
+    await bot.set_webhook(WEBHOOK_URL)
+    # insert code here to run it after start
+
+
+async def on_shutdown():
+    logging.warning('Shutting down..')
+
+    # insert code here to run it before shutdown
+
+    # Remove webhook (not acceptable in some cases)
+    await bot.delete_webhook()
+
+    # Close DB connection (if used)
+    await dp.storage.close()
+    await dp.storage.wait_closed()
+
+    logging.warning('Bye!')
+
+
 def main():
-    executor.start_polling(dp, skip_updates=True)
+    # executor.start_polling(dp, skip_updates=True)
+    start_webhook(
+        dispatcher=dp,
+        webhook_path=WEBHOOK_PATH,
+        on_startup=on_startup,
+        on_shutdown=on_shutdown,
+        skip_updates=True,
+        host=WEBAPP_HOST,
+        port=WEBAPP_PORT,
+    )
 
 
 if __name__ == "__main__":
