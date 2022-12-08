@@ -18,10 +18,10 @@ class UsersFault(Base):
         self.game = game
 
     def __repr__(self):
-        info: str = f'userId: {self.userId}' \
-                    f'word: {self.word}' \
-                    f'game: {self.game}' \
-                    f'date: {str(self.date)[:19]}'
+        info: str = f'{self.userId}\n' \
+                    f'{self.word}\n' \
+                    f'{self.game}\n' \
+                    f'{str(self.date)[:19]}'
         return info
 
 

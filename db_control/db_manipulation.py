@@ -1,4 +1,6 @@
 import os
+from collections import defaultdict
+
 from db_control.db_models.database import DATABASE_NAME, create_db, Session
 from sqlalchemy import and_
 from db_control.db_models.users import Users
@@ -84,10 +86,12 @@ def check_buffer(table, **kwargs):
         return res
 
     else:
+        res = defaultdict(list)
         for it in session.query(table):
             try:
                 user = str(it).split('\n')
                 id = user[0]
+                username = get_username(int(id))
                 word = user[1]
                 try:
                     game = int(user[2])
@@ -99,8 +103,9 @@ def check_buffer(table, **kwargs):
                     # date = user[4]
             except:
                 ...
-            res.append(f"Id: {id}, word: {word}, game: {game}")
-        return res
+            # res.append(f"{id},  {word},  {game}\n")
+            res[username].append(word)
+        return dict(res)
 
 
 def get_word(table, **kwargs):
@@ -122,6 +127,12 @@ def get_user():
         date = user[2]
         res.append(f"Id: {id}, username: {username}, reg: {date}")
     return res
+
+
+def get_username(userId):
+    session = Session()
+    word = session.query(Users).filter(Users.userId == userId).first()
+    return str(word).split('\n')[1]
 
 
 def last_record(userId, word):

@@ -154,3 +154,4 @@ cython_debug/
 .idea/encodings.xml
 db_control/config.py
 /consol_ver/
+core/tst.py

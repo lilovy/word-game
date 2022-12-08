@@ -3,7 +3,7 @@ import os
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
 from dotenv import load_dotenv, find_dotenv
-from tg_game import game, last_ltr
+from core.tg_game import game, last_ltr
 from core.keyboards.reply import reply_keyboard, admin_keyboard, start_keyboard
 from db_control.db_manipulation import (create_record,
                                         check_word,
@@ -255,5 +255,9 @@ async def echo(message: types.Message):
                       game=check_game(message.chat.id))
 
 
-if __name__ == "__main__":
+def main():
     executor.start_polling(dp, skip_updates=True)
+
+
+if __name__ == "__main__":
+    main()
