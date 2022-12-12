@@ -124,8 +124,8 @@ def get_user():
         user = str(it).split('\n')
         id = user[0]
         username = user[1]
-        date = user[2]
-        res.append(f"Id: {id}, username: {username}, reg: {date}")
+        # date = user[2]
+        res.append(f"ID: {id},  USERNAME: {username}")
     return res
 
 

@@ -2,17 +2,17 @@ import os
 import re
 from random import randint
 
-dir_f = os.path.dirname(os.getcwd()) + '\\word_engine'
+dir_f = os.path.dirname(os.getcwd()) + '\\word-game\\word_engine\\singular.txt'
 
 
 def read_dict():
-    with open(f'{dir_f}\\singular.txt', encoding='utf-8') as f:
+    with open(f'{dir_f}', encoding='utf-8') as f:
         dicts = [i.lower().rstrip() for i in f.readlines()]
     return dicts
 
 
 def update_dict(word):
-    with open(f'{dir_f}\\singular.txt', 'a', encoding='utf-8') as f:
+    with open(f'{dir_f}', 'a', encoding='utf-8') as f:
         f.write(f'\n{word}')
 
 
