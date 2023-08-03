@@ -155,3 +155,4 @@ cython_debug/
 db_control/config.py
 /consol_ver/
 core/tst.py
+/.venv10/

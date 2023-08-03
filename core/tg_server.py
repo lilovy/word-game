@@ -3,7 +3,7 @@ import os
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
 from dotenv import load_dotenv, find_dotenv
-from core.tg_game import game, last_ltr
+from core.tg_game import game, last_ltr, return_meaning
 from core.keyboards.reply import reply_keyboard, admin_keyboard, start_keyboard
 from db_control.db_manipulation import (create_record,
                                         check_word,
@@ -21,6 +21,7 @@ from db_control.db_models.bot_buffer import BotBuffer
 from db_control.db_models.user_fault import UsersFault
 from db_control.db_models.games import Games
 from db_control.db_models.users_words import UserDict
+
 
 
 load_dotenv(find_dotenv())
@@ -73,6 +74,11 @@ async def go_back_command(message: types.Message):
                          f""" - {last_ltr(get_word(BotBuffer,
                                                    userId=message.chat.id,
                                                    game=check_game(message.chat.id)))}""")
+
+
+@dp.message_handler(Text(equals='search in wikipedia'))
+async def word_meaning(message: types.Message):
+    await message.answer(return_meaning(get_word(BotBuffer, userId=message.chat.id)))
 
 
 @dp.message_handler(commands=['newgame'])
@@ -134,15 +140,6 @@ async def printusers(message: types.Message):
         await message.reply('access restricted')
 
 
-# @dp.message_handler(commands=['allgames'])
-# async def printgames(message: types.Message):
-#     if message.chat.id == adminId:
-#         db_games = [(frame[0], frame[2], frame[1].isoformat(' ')) for frame in db.select_all_games()]
-#         await message.reply(db_games)
-#     else:
-#         await message.reply('internal command')
-
-
 @dp.message_handler(commands=['faults'])
 async def printfault(message: types.Message):
 
@@ -155,12 +152,12 @@ async def printfault(message: types.Message):
     # -----------------------------------------
 
 
-@dp.message_handler(commands=['addword'])
-async def addword(message: types.Message):
-    ...
+# @dp.message_handler(commands=['addword'])
+# async def addword(message: types.Message):
+#     ...
 
 
-@dp.message_handler(Text(equals=''))
+# @dp.message_handler(Text(equals=''))
 
 
 @dp.message_handler()

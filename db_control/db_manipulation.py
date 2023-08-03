@@ -146,15 +146,5 @@ if __name__ == "__main__":
         print("create...")
         create_database()
         print("db is created")
-    #
-    # # create_record(table=Users, username='Joe', userId=3424)
-    # # print(get_items(Users, username='Joe'))
-    # create_record(table=UsersBuffer, userId=3424, word='ok', game=1)
-    # create_record(table=UsersBuffer, userId=34234, word='ok', game=1)
-    # # print(check_exist_user(3424))
-    # print(check_word(UsersBuffer, userId=34244, word='ok'))
-    # print(get_items(UsersBuffer, userId=3424))
-    # check_user(22245244, 'Jan')
-    # print(get_items(Users, userId=3424))
-    # print(kwg(prt='to'))
+
     print(get_user())

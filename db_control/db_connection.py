@@ -167,7 +167,6 @@ class DatabaseTg:
             else:
                 return 'buffer is empty'
 
-    #
     # insert data section
 
     def insert_user(self, tg_user, name):
@@ -239,21 +238,5 @@ class DatabaseTg:
             self.connection.commit()
 
 
-# def main():
-#     return select_user(347265373)
-#
-#
-# if __name__ == "__main__":
-#     print(main())
-
 db = DatabaseTg(port=cf.port, user=cf.user, password=cf.password, database=cf.db_name, host=cf.host)
 db.connect()
-
-
-# print(db.select_last_word(347265373))
-# print(db.select_user_buff(347265373))
-# print(db.select_last_word(347265373))
-# print(db.select_user_fault(347265373))
-# print(db.select_bot_buff(347265373))
-
-

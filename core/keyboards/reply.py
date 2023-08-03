@@ -13,10 +13,11 @@ reply_keyboard = ReplyKeyboardMarkup(
     resize_keyboard=True, keyboard=[
         [
             KeyboardButton(text='recall a word'),
+            KeyboardButton(text='search in wikipedia'),
             KeyboardButton(text='/buffer'),
-            KeyboardButton(text='/help'),
         ],
         [
+            KeyboardButton(text='/help'),
             KeyboardButton(text='/newgame'),
             KeyboardButton(text='admin command'),
         ]
